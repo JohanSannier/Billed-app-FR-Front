@@ -11,12 +11,12 @@ export default class {
     if (buttonNewBill) buttonNewBill.addEventListener('click', this.handleClickNewBill)
     const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
     if (iconEye) iconEye.forEach(icon => {
-      icon.addEventListener('click', () => this.handleClickIconEye(icon))
+      icon.addEventListener('click', (e) => this.handleClickIconEye(icon))
     })
     new Logout({ document, localStorage, onNavigate })
   }
 
-  handleClickNewBill = () => {
+  handleClickNewBill = (e) => {
     this.onNavigate(ROUTES_PATH['NewBill'])
   }
 
@@ -27,14 +27,17 @@ export default class {
     $('#modaleFile').modal('show')
   }
 
+  // not need to cover this function by tests
+  /* istanbul ignore next */
   getBills = () => {
+    const userEmail = localStorage.getItem('user') ?
+    JSON.parse(localStorage.getItem('user')).email : ""
     if (this.store) {
       return this.store
       .bills()
       .list()
-      .then(snapshot => {
-        const bills = snapshot
-          .map(doc => {
+      .then((snapshot) => {
+        const bills = snapshot.map((doc) => {
             try {
               return {
                 ...doc,
@@ -52,9 +55,10 @@ export default class {
               }
             }
           })
-          console.log('length', bills.length)
+          .filter(bill => bill.email === userEmail)
         return bills
       })
+      .catch(error => error)
     }
   }
 }
