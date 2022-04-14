@@ -13,8 +13,8 @@ export const filteredBills = (data, status) => {
       // in jest environment
       if (typeof jest !== 'undefined') {
         selectCondition = (bill.status === status)
-      }
-      /* istanbul ignore next */
+      } 
+       /* istanbul ignore next */
       else {
         // in prod environment
         const userEmail = JSON.parse(localStorage.getItem("user")).email
@@ -53,7 +53,7 @@ export const card = (bill) => {
 }
 
 export const cards = (bills) => {
-  return bills && bills.length ? bills.map(bill => card(bill)).join("") : ""
+  return bills && bills.length ? bills.map((bill) => card(bill)).join("") : ""
 }
 
 export const getStatus = (index) => {
@@ -75,6 +75,7 @@ export default class {
     $('#arrow-icon1').click((e) => this.handleShowTickets(e, bills, 1))
     $('#arrow-icon2').click((e) => this.handleShowTickets(e, bills, 2))
     $('#arrow-icon3').click((e) => this.handleShowTickets(e, bills, 3))
+    this.getBillsAllUsers()
     new Logout({ localStorage, onNavigate })
   }
 
@@ -100,7 +101,7 @@ export default class {
       $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
 
       $('.dashboard-right-container div').html(`
-        <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
+        <div id="big-billed-icon"> ${BigBilledIcon} </div>
       `)
       $('.vertical-navbar').css({ height: '120vh' })
       this.counter ++
@@ -146,6 +147,7 @@ export default class {
     }
 
     bills.forEach(bill => {
+      $(`#open-bill${bill.id}`).off("click")
       $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
     })
 
@@ -153,14 +155,16 @@ export default class {
 
   }
 
+  // not need to cover this function by tests
+   /* istanbul ignore next */
   getBillsAllUsers = () => {
     if (this.store) {
       return this.store
       .bills()
       .list()
-      .then(snapshot => {
+      .then((snapshot) => {
         const bills = snapshot
-        .map(doc => ({
+        .map((doc) => ({
           id: doc.id,
           ...doc,
           date: doc.date,
@@ -173,9 +177,9 @@ export default class {
       })
     }
   }
-
+    
   // not need to cover this function by tests
-  /* istanbul ignore next */
+   /* istanbul ignore next */
   updateBill = (bill) => {
     if (this.store) {
     return this.store
